@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vaibhav Jagger | AWS Solutions Architect</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #000;
+            --secondary-color: #1d1d1f;
+            --accent-color: #06c;
+            --text-color: #f5f5f7;
+            --text-secondary: #86868b;
+            --section-bg: #161617;
+            --transition-speed: 0.5s;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+
+        body {
+            background-color: var(--primary-color);
+            color: var(--text-color);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Header Styles */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--text-color);
+            text-decoration: none;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-left: 30px;
+        }
+
+        nav ul li a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 400;
+            transition: color var(--transition-speed);
+            position: relative;
+        }
+
+        nav ul li a:hover {
+            color: var(--accent-color);
+        }
+
+        nav ul li a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 0;
+            background-color: var(--accent-color);
+            transition: width var(--transition-speed);
+        }
+
+        nav ul li a:hover::after {
+            width: 100%;
+        }
+
+        /* Section Styles */
+        .section {
+            min-height: 100vh;
+            padding: 120px 10% 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 1s ease;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: none;
+        }
+
+        .section.active {
+            opacity: 1;
+            transform: translateY(0);
+            display: flex;
+        }
+
+        .section-title {
+            font-size: 72px;
+            font-weight: 700;
+            margin-bottom: 40px;
+            background: linear-gradient(90deg, #fff, #aaa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .section-subtitle {
+            font-size: 24px;
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+            max-width: 800px;
+        }
+
+        /* Home Section */
+        #home {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2072&q=80') no-repeat center center/cover;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .home-content {
+            max-width: 600px;
+        }
+
+        .profile-container {
+            width: 350px;
+            height: 350px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 5px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 30px rgba(0, 102, 204, 0.5);
+            transition: all 0.5s ease;
+        }
+
+        .profile-container:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 40px rgba(0, 102, 204, 0.8);
+        }
+
+        .profile-pic {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* About Section */
+        #about {
+            background-color: var(--section-bg);
+        }
+
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            width: 100%;
+        }
+
+        .about-text {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        .skills-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .skill-chip {
+            background-color: rgba(0, 102, 204, 0.2);
+            color: var(--accent-color);
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 14px;
+            border: 1px solid var(--accent-color);
+        }
+
+        /* Projects Section */
+        #projects {
+            background: linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.9)), url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80') no-repeat center center/cover;
+        }
+
+        .project-card {
+            background-color: rgba(22, 22, 23, 0.8);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            max-width: 800px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .project-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .project-title {
+            font-size: 28px;
+            margin-bottom: 15px;
+            color: var(--text-color);
+        }
+
+        .project-description {
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+
+        /* Game Section */
+        #game {
+            background-color: var(--section-bg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .game-container {
+            position: relative;
+            width: 400px;
+            height: 400px;
+            border: 2px solid var(--accent-color);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        #game-canvas {
+            background-color: var(--secondary-color);
+            width: 100%;
+            height: 100%;
+        }
+
+        .game-controls {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .game-instructions {
+            margin-top: 20px;
+            color: var(--text-secondary);
+            max-width: 500px;
+            text-align: center;
+        }
+
+        /* Contact Section */
+        #contact {
+            background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url('https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2072&q=80') no-repeat center center/cover;
+        }
+
+        .contact-links {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .contact-link {
+            display: flex;
+            align-items: center;
+            color: var(--text-color);
+            text-decoration: none;
+            font-size: 20px;
+            transition: color var(--transition-speed);
+        }
+
+        .contact-link:hover {
+            color: var(--accent-color);
+        }
+
+        .contact-link i {
+            margin-right: 15px;
+            font-size: 24px;
+        }
+
+        /* Footer */
+        footer {
+            padding: 30px;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 14px;
+            background-color: var(--secondary-color);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            header {
+                padding: 15px 20px;
+            }
+
+            nav ul li {
+                margin-left: 15px;
+            }
+
+            .section-title {
+                font-size: 48px;
+            }
+
+            .section-subtitle {
+                font-size: 18px;
+            }
+
+            #home {
+                flex-direction: column;
+                text-align: center;
+                padding-top: 150px;
+            }
+
+            .home-content {
+                margin-bottom: 40px;
+            }
+
+            .profile-container {
+                width: 250px;
+                height: 250px;
+            }
+
+            .about-content {
+                grid-template-columns: 1fr;
+            }
+
+            .game-container {
+                width: 300px;
+                height: 300px;
+            }
+        }
+
+        /* Apple-like scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--secondary-color);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #005bb5;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="#" class="logo">Vaibhav.</a>
+        <nav>
+            <ul>
+                <li><a href="#home" class="nav-link active">Home</a></li>
+                <li><a href="#about" class="nav-link">About</a></li>
+                <li><a href="#projects" class="nav-link">Projects</a></li>
+                <li><a href="#game" class="nav-link">Relax</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Home Section -->
+        <section id="home" class="section active">
+            <div class="home-content">
+                <h1 class="section-title">Hello, I'm Vaibhav</h1>
+                <p class="section-subtitle">AWS Certified Solutions Architect Associate specializing in cloud infrastructure and scalable solutions. Currently focused on building robust cloud architectures and optimizing AWS environments.</p>
+            </div>
+            <div class="profile-container">
+                <img src="profile.jpg" alt="Vaibhav Jagger" class="profile-pic">
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="section">
+            <h1 class="section-title">About Me</h1>
+            <div class="about-content">
+                <div>
+                    <p class="about-text">
+                        I'm an aspiring cloud professional with a passion for designing and implementing scalable solutions on AWS. 
+                        Recently certified as an AWS Solutions Architect Associate, I'm focused on deepening my expertise in cloud 
+                        infrastructure, security, and cost optimization.
+                    </p>
+                    <p class="about-text">
+                        My journey in cloud computing began with a fascination for how technology can scale to meet global demands. 
+                        I enjoy solving complex problems and architecting systems that are not just functional but also efficient 
+                        and resilient.
+                    </p>
+                </div>
+                <div>
+                    <h2 style="font-size: 28px; margin-bottom: 20px; color: var(--accent-color);">Skills</h2>
+                    <div class="skills-container">
+                        <span class="skill-chip">AWS Architecture</span>
+                        <span class="skill-chip">Cloud Computing</span>
+                        <span class="skill-chip">EC2</span>
+                        <span class="skill-chip">S3</span>
+                        <span class="skill-chip">VPC</span>
+                        <span class="skill-chip">IAM</span>
+                        <span class="skill-chip">CloudFormation</span>
+                        <span class="skill-chip">Linux Administration</span>
+                        <span class="skill-chip">Networking</span>
+                        <span class="skill-chip">Security Best Practices</span>
+                    </div>
+                    <div style="margin-top: 40px;">
+                        <h2 style="font-size: 28px; margin-bottom: 20px; color: var(--accent-color);">Certifications</h2>
+                        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
+                            <img src="https://d1.awsstatic.com/training-and-certification/certification-badges/AWS-Certified-Solutions-Architect-Associate_badge.3419559c682629072f1eb968d59dea0741772c0f.png" alt="AWS Certified Solutions Architect - Associate" style="width: 60px; height: 60px;">
+                            <div>
+                                <h3 style="font-size: 18px; margin-bottom: 5px;">AWS Certified Solutions Architect - Associate</h3>
+                                <p style="color: var(--text-secondary); font-size: 14px;">Issued 2025</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Projects Section -->
+        <section id="projects" class="section">
+            <h1 class="section-title">Projects</h1>
+            <div class="project-card">
+                <h2 class="project-title">Hosting a Static Website on S3</h2>
+                <p class="project-description">
+                    Deployed a static portfolio website using AWS S3 to stay within the AWS Free Tier and minimize costs. 
+                    This simple yet effective solution demonstrates my understanding of core AWS services while being budget-conscious.
+                </p>
+                <div style="display: flex; gap: 15px; margin-top: 20px;">
+                    <span class="skill-chip">AWS S3</span>
+                    <span class="skill-chip">HTTP</span>
+                </div>
+            </div>
+            <div class="project-card">
+                <h2 class="project-title">More Projects Coming Soon</h2>
+                <p class="project-description">
+                    I'm currently working on more projects that will be added here soon.
+                </p>
+            </div>
+        </section>
+
+        <!-- Game Section -->
+        <section id="game" class="section">
+            <h1 class="section-title">Relax & Play</h1>
+            <p class="section-subtitle">Take a break with this classic Snake game. Use arrow keys to control the snake.</p>
+            <div class="game-container">
+                <canvas id="game-canvas"></canvas>
+            </div>
+            <div class="game-controls">
+                <button id="start-game" style="background-color: var(--accent-color); color: white; border: none; padding: 12px 24px; border-radius: 50px; font-size: 16px; cursor: pointer; transition: all 0.3s ease;">Start Game</button>
+                <button id="pause-game" style="background-color: transparent; color: var(--text-color); border: 1px solid var(--text-color); padding: 12px 24px; border-radius: 50px; font-size: 16px; cursor: pointer; margin-left: 15px; transition: all 0.3s ease;">Pause</button>
+            </div>
+            <div class="game-instructions">
+                <p>Score: <span id="score">0</span> | High Score: <span id="high-score">0</span></p>
+                <p>Use arrow keys to control the snake. Eat the food to grow longer. Don't hit the walls or yourself!</p>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="section">
+            <h1 class="section-title">Let's Connect</h1>
+            <p class="section-subtitle">Feel free to reach out for collaborations or just to say hello!</p>
+            <div class="contact-links">
+                <a href="https://www.linkedin.com/in/vaibhav-jagger-913470213/" class="contact-link" target="_blank">
+                    <i class="fab fa-linkedin"></i> LinkedIn
+                </a>
+                <a href="mailto:vaibhavjagger23@gmail.com" class="contact-link">
+                    <i class="fas fa-envelope"></i> vaibhavjagger23@gmail.com
+                </a>
+                <a href="https://instagram.com/vaibhavjagger" class="contact-link" target="_blank">
+                    <i class="fab fa-instagram"></i> @vaibhavjagger
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2023 Vaibhav Jagger. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Smooth scrolling for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                // Remove active class from all nav links
+                document.querySelectorAll('.nav-link').forEach(link => {
+                    link.classList.remove('active');
+                });
+                
+                // Add active class to clicked nav link
+                this.classList.add('active');
+                
+                // Hide all sections
+                document.querySelectorAll('.section').forEach(section => {
+                    section.classList.remove('active');
+                });
+                
+                // Show the target section
+                const targetId = this.getAttribute('href');
+                document.querySelector(targetId).classList.add('active');
+                
+                // Smooth scroll to top (since sections are full height)
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Snake Game
+        const canvas = document.getElementById('game-canvas');
+        const ctx = canvas.getContext('2d');
+        const startButton = document.getElementById('start-game');
+        const pauseButton = document.getElementById('pause-game');
+        const scoreDisplay = document.getElementById('score');
+        const highScoreDisplay = document.getElementById('high-score');
+
+        // Set canvas size
+        canvas.width = 400;
+        canvas.height = 400;
+
+        // Game variables
+        let snake = [{x: 200, y: 200}];
+        let food = {};
+        let direction = 'right';
+        let nextDirection = 'right';
+        let gameSpeed = 150;
+        let score = 0;
+        let highScore = localStorage.getItem('snakeHighScore') || 0;
+        let gameInterval;
+        let isPaused = false;
+        let isGameRunning = false;
+
+        // Initialize high score display
+        highScoreDisplay.textContent = highScore;
+
+        // Generate random food
+        function generateFood() {
+            food = {
+                x: Math.floor(Math.random() * 20) * 20,
+                y: Math.floor(Math.random() * 20) * 20
+            };
+            
+            // Make sure food doesn't appear on snake
+            for (let segment of snake) {
+                if (segment.x === food.x && segment.y === food.y) {
+                    return generateFood();
+                }
+            }
+        }
+
+        // Draw game elements
+        function draw() {
+            // Clear canvas
+            ctx.fillStyle = '#161617';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw snake
+            ctx.fillStyle = '#06c';
+            for (let segment of snake) {
+                ctx.fillRect(segment.x, segment.y, 18, 18);
+            }
+            
+            // Draw food
+            ctx.fillStyle = '#ff3b30';
+            ctx.beginPath();
+            ctx.arc(food.x + 10, food.y + 10, 8, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        // Update game state
+        function update() {
+            // Move snake
+            let head = {x: snake[0].x, y: snake[0].y};
+            
+            switch (direction) {
+                case 'up':
+                    head.y -= 20;
+                    break;
+                case 'down':
+                    head.y += 20;
+                    break;
+                case 'left':
+                    head.x -= 20;
+                    break;
+                case 'right':
+                    head.x += 20;
+                    break;
+            }
+            
+            // Check for collisions with walls
+            if (head.x < 0 || head.x >= canvas.width || head.y < 0 || head.y >= canvas.height) {
+                gameOver();
+                return;
+            }
+            
+            // Check for collisions with self
+            for (let i = 0; i < snake.length; i++) {
+                if (head.x === snake[i].x && head.y === snake[i].y) {
+                    gameOver();
+                    return;
+                }
+            }
+            
+            // Add new head
+            snake.unshift(head);
+            
+            // Check if food is eaten
+            if (head.x === food.x && head.y === food.y) {
+                // Play munch sound
+                const munchSound = new Audio('https://www.soundjay.com/mechanical/sounds/bite-01.mp3');
+                munchSound.play().catch(e => console.log("Audio play failed:", e));
+                
+                score += 10;
+                scoreDisplay.textContent = score;
+                
+                if (score > highScore) {
+                    highScore = score;
+                    highScoreDisplay.textContent = highScore;
+                    localStorage.setItem('snakeHighScore', highScore);
+                }
+                
+                generateFood();
+                
+                // Increase speed slightly every 50 points
+                if (score % 50 === 0 && gameSpeed > 50) {
+                    gameSpeed -= 10;
+                    clearInterval(gameInterval);
+                    gameInterval = setInterval(gameLoop, gameSpeed);
+                }
+            } else {
+                // Remove tail if no food eaten
+                snake.pop();
+            }
+        }
+
+        // Main game loop
+        function gameLoop() {
+            if (!isPaused) {
+                update();
+                draw();
+            }
+        }
+
+        // Game over
+        function gameOver() {
+            clearInterval(gameInterval);
+            isGameRunning = false;
+            startButton.textContent = 'Play Again';
+            
+            // Show game over message
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.75)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.fillStyle = '#fff';
+            ctx.font = '30px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('Game Over!', canvas.width / 2, canvas.height / 2 - 30);
+            ctx.font = '20px Arial';
+            ctx.fillText(`Score: ${score}`, canvas.width / 2, canvas.height / 2 + 10);
+            ctx.fillText(`High Score: ${highScore}`, canvas.width / 2, canvas.height / 2 + 40);
+        }
+
+        // Start game
+        function startGame() {
+            if (isGameRunning) return;
+            
+            // Reset game state
+            snake = [{x: 200, y: 200}];
+            direction = 'right';
+            nextDirection = 'right';
+            score = 0;
+            scoreDisplay.textContent = score;
+            gameSpeed = 150;
+            isPaused = false;
+            isGameRunning = true;
+            
+            generateFood();
+            draw();
+            
+            clearInterval(gameInterval);
+            gameInterval = setInterval(gameLoop, gameSpeed);
+            
+            startButton.textContent = 'Restart';
+        }
+
+        // Event listeners
+        startButton.addEventListener('click', startGame);
+        
+        pauseButton.addEventListener('click', function() {
+            if (!isGameRunning) return;
+            
+            isPaused = !isPaused;
+            this.textContent = isPaused ? 'Resume' : 'Pause';
+        });
+
+        // Keyboard controls
+        document.addEventListener('keydown', function(e) {
+            if (!isGameRunning) return;
+            
+            switch (e.key) {
+                case 'ArrowUp':
+                    if (direction !== 'down') nextDirection = 'up';
+                    break;
+                case 'ArrowDown':
+                    if (direction !== 'up') nextDirection = 'down';
+                    break;
+                case 'ArrowLeft':
+                    if (direction !== 'right') nextDirection = 'left';
+                    break;
+                case 'ArrowRight':
+                    if (direction !== 'left') nextDirection = 'right';
+                    break;
+                case ' ':
+                    // Space bar to pause
+                    isPaused = !isPaused;
+                    pauseButton.textContent = isPaused ? 'Resume' : 'Pause';
+                    break;
+            }
+            
+            // Prevent default for arrow keys to stop page scrolling
+            if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' '].includes(e.key)) {
+                e.preventDefault();
+            }
+        });
+
+        // Update direction at the start of each frame to prevent instant 180-degree turns
+        function updateDirection() {
+            direction = nextDirection;
+            requestAnimationFrame(updateDirection);
+        }
+        updateDirection();
+
+        // Initialize page with Home section active
+function initializePage() {
+    // Hide all sections first
+    document.querySelectorAll('.section').forEach(section => {
+        section.classList.remove('active');
+    });
+    
+    // Show only the home section
+    document.querySelector('#home').classList.add('active');
+    
+    // Set home nav link as active
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.classList.remove('active');
+    });
+    document.querySelector('a[href="#home"]').classList.add('active');
+}
+
+// Call initialization when page loads
+window.addEventListener('load', initializePage);
+
+// Smooth scrolling for navigation
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        // Remove active class from all nav links
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.classList.remove('active');
+        });
+        
+        // Add active class to clicked nav link
+        this.classList.add('active');
+        
+        // Hide all sections
+        document.querySelectorAll('.section').forEach(section => {
+            section.classList.remove('active');
+        });
+        
+        // Show the target section
+        const targetId = this.getAttribute('href');
+        document.querySelector(targetId).classList.add('active');
+    });
+});
+    </script>
+</body>
+</html>
